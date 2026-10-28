@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.DS_Store
+# Local testing notes, not part of the project
+TESTING_ON_LINUX.md
