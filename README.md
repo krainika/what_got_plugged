@@ -26,6 +26,25 @@ sudo apt install python3-tk pulseaudio-utils
 `python3-tk` is needed for the window. `pulseaudio-utils` provides `pactl`, which
 is only needed for audio naming. Run the app as your normal user, not with `sudo`.
 
+## Opening it without a terminal
+
+**macOS:** double-click **What Got Plugged.app**. It finds a Python 3 that has
+tkinter (python.org, Homebrew, pyenv, conda, or Apple's `/usr/bin/python3`) and
+runs `what_got_plugged.py` from the same folder as the app. If that file isn't
+there, it runs the copy inside the app instead. Errors are written to
+`~/Library/Logs/WhatGotPlugged.log`. You can drag the app to the Dock.
+
+**Linux:** run the installer once to add the app to your application menu:
+
+```bash
+./linux/install.sh              # menu entry
+./linux/install.sh --desktop    # menu entry + Desktop icon
+./linux/install.sh --uninstall  # remove them
+```
+
+The menu entry points at this folder, so if you move the folder, run the
+installer again. Errors are written to `~/.local/state/what-got-plugged.log`.
+
 ## How to use it
 
 1. Press **Start**. The app remembers what's connected right now.

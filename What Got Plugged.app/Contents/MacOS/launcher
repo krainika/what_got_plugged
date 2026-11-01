@@ -1,0 +1,38 @@
+#!/bin/bash
+# Launcher for "What Got Plugged?" — finds a Python 3 that has tkinter and runs the script.
+LOG="$HOME/Library/Logs/WhatGotPlugged.log"
+HERE="$(cd "$(dirname "$0")" && pwd)"
+APPDIR="$(cd "$HERE/../.." && pwd)"
+
+# Prefer the script sitting next to the .app (so edits to the repo copy take effect),
+# otherwise use the copy bundled inside the app.
+SCRIPT="$(dirname "$APPDIR")/what_got_plugged.py"
+[ -f "$SCRIPT" ] || SCRIPT="$HERE/../Resources/what_got_plugged.py"
+
+export PATH="/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+PY=""
+for c in \
+  /Library/Frameworks/Python.framework/Versions/Current/bin/python3 \
+  /usr/local/bin/python3 \
+  /opt/homebrew/bin/python3 \
+  "$HOME/.pyenv/shims/python3" \
+  "$HOME/miniconda3/bin/python3" "$HOME/anaconda3/bin/python3" \
+  "$HOME/radioconda/bin/python3" \
+  /usr/bin/python3 ; do
+  if [ -x "$c" ] && "$c" -c "import tkinter" >/dev/null 2>&1; then PY="$c"; break; fi
+done
+
+if [ -z "$PY" ]; then
+  osascript -e 'display alert "What Got Plugged?" message "Could not find a Python 3 with tkinter. Install Python from python.org (it includes tkinter), then try again."'
+  exit 1
+fi
+
+cd "$(dirname "$SCRIPT")"
+echo "=== $(date)  using $PY  script $SCRIPT" >> "$LOG"
+"$PY" "$SCRIPT" >> "$LOG" 2>&1
+rc=$?
+if [ $rc -ne 0 ]; then
+  osascript -e "display alert \"What Got Plugged? quit with an error\" message \"Exit code $rc. Details are in ~/Library/Logs/WhatGotPlugged.log\""
+fi
+exit $rc
